@@ -8,6 +8,9 @@ const domImg = document.getElementById("image");
 const domFails = document.getElementById("fail-count");
 const domFriends = document.getElementById("friend-count");
 
+const imgWon = "assets/images/pphappy.jpg";
+const imgLose = "assets/images/ppserious.jpg";
+
 let currentWord = null;
 let currentImage = null;
 let strikes = 0;
@@ -15,7 +18,7 @@ let friends = 0;
 let fails = 0;
 
 let currentWordList = [];
-let guessedLetters = [" "];
+let guessedLetters = [];
 
 
 const listAPI = "https://dog.ceo/api/breeds/list/all";
@@ -31,145 +34,133 @@ startGame();
 
 function startGame()
 {
+
+  renderScreen(false);
+
+  //override screen render
   domCurrentList.innerHTML = "Penelope needs some help! She is trying to make new friends and wants to know what \
       breed they are to look smart. Don't let her down! Press any button to continue"
 
-      //update img to penelope hugging stuffed animal
-      document.onkeyup = function(event)
-      {
-        grabGameInfo();
-      }
+  startGameOnClick();
+}
+
+function gamePlay()
+{
+
+  formatCurrentWordList();
+  renderScreen(JSON.parse(this.response).message);
+  playerInput();
+
+}
+
+function playerInput()
+{
+  document.onkeyup = function(event)
+  {
+    //Check against alphabet array and against already played letters
+    if(letterList.indexOf(event.key) !== -1 && guessedLetters.indexOf(event.key) === -1)
+    {
+      checkInput(event.key);
+      //push guessed letter to the array for rendering
+      guessedLetters.push(event.key);
+
+      renderScreen(false);
+
+      checkForGameEnd();
+    }
+  };
+}
+
+function formatCurrentWordList()
+{
+  //create desired look
+  currentWordList = Array(currentWord.length).fill("_");
+  //spaces dont render right so make - instead
+  currentWordList[currentWord.indexOf(" ")] = "-";
+}
+
+function checkForGameEnd()
+{
+  if(strikes === 4)
+  {
+    roundLost();
+  }
+  else if(!currentWordList.includes("_"))
+  {
+      roundWon();
+  }
 }
 
 function roundWon()
 {
+  //increment win counter
+  friends++;
+  //render screen
+  renderScreen(imgWon);
+
+  //override part of screen render
   domCurrentList.innerHTML = "Wow she made a new friend! Look how happy she is! Press a button \
       to help her make another friend";
 
-  domImg.src = "assets/images/pphappy.jpg";
-  friends++;
-  domFails.innerHTML = fails.toString();
-  domFriends.innerHTML = friends.toString();
-
-    //reset values
-  strikes = 0;
-  guessedLetters = [" "];
-  document.onkeyup = function(event)
-  {
-    grabGameInfo();
-  }
+  //resetVariables();
+  resetVariables();
+  //listen to start game on button click
+  startGameOnClick();
 
 }
 
 function roundLost()
 {
+  //increment lose counter
+  fails++;
+  //render screen
+  renderScreen(imgLose);
 
+  //override screen render
   domCurrentList.innerHTML = "She's not too happy, you made her look stupid and they didn't want to be \
     her friend. Press any button to try and redeem yourself";
 
-  domImg.src = "assets/images/ppserious.jpg";
-  fails++;
-  domFails.innerHTML = fails.toString();
-  domFriends.innerHTML = friends.toString();
-
-    //reset values
-  strikes = 0;
-  guessedLetters = [" "];
-  console.log("here");
-  document.onkeyup = function(event)
+  //resetVariables();
+  resetVariables();
+  //listen to start game on button click
+  startGameOnClick();
+}
+function checkInput(input)
+{
+  if(currentWord.indexOf(input) !== -1)
   {
-    grabGameInfo();
+    findAllLetters(input);
+  }
+  else
+  {
+    strikes++;
   }
 }
 
-function gamePlay()
+function findAllLetters(letter)
 {
-  //img var make global with changeable src Maybe add src?
+  for(let i = 0; i < currentWord.length; i++)
+  {
+    if(currentWord[i] === letter)
+    {
+      //this finds index
+      currentWordList[i] = letter;
+    }
+  }
+}
 
-
-  currentWordList= Array(currentWord.length).fill("_");
-  //fill in space where needed
-
-  currentWordList[currentWord.indexOf(" ")] = "-";
-  currentWord[currentWord.indexOf(" ")] = "-";
-  //render word
-
-  //move; for now render everything
-  domImg.src = JSON.parse(this.response).message;
+function renderScreen(imgSrc)
+{
   domCurrentList.innerHTML = currentWordList.join(" ");
   domGuessedLetters.innerHTML = guessedLetters.join(" ");
   domStrikes.innerHTML = strikes.toString();
   domFails.innerHTML = fails.toString();
   domFriends.innerHTML = friends.toString();
-
-  //get input
-document.onkeyup = function(event)
-{
-
-  //first check if user has already put in input make sound if he has also make sure inputs a letter
-  if(letterList.indexOf(event.key) !== -1 && guessedLetters.indexOf(event.key) === -1)
+  if(imgSrc !== false)
   {
-      //if wrong render strikes
-      //if strikes === 4 render lose screen
-      //reset
-    if(currentWord.indexOf(event.key) !== -1)
-    {
-      //find all occurences in word and fill them in
-      //function here
-      for(var i = 0; i < currentWord.length; i++)
-      {
-        if(currentWord[i] === event.key)
-        {
-          //this finds index
-          //render current found list
-          currentWordList[i] = event.key;
-
-
-
-        }
-      }
-
-    }
-    else
-    {
-      strikes++;
-      //render strikes here; function here
-    }
-
-    //should we render whole page or just needed sections?
-    //if currentWordList === currentWord render win screen
-    //all renders in function(s)
-    guessedLetters.push(event.key);
-
-    //render everything again besides image
-    domCurrentList.innerHTML = currentWordList.join(" ");
-    domGuessedLetters.innerHTML = guessedLetters.join(" ");
-    domStrikes.innerHTML = strikes.toString();
-    //====
-
-
-
-    //win and lose here
-    if(strikes === 4)
-    {
-      //render lose here
-      //function here
-      roundLost();
-    }
-
-
-    if(!currentWordList.includes("_"))
-    {
-        roundWon();
-    }
-
+    domImg.src = imgSrc;
 
   }
-  else {
-    console.log("invalid or guessed letter")
-  }
-};
-
 }
 
 function grabGameInfo()
@@ -250,4 +241,20 @@ function createImgCall(dogBreed)
   }
   return dogBreed;
 
+}
+
+function startGameOnClick()
+{
+  document.onkeyup = function(event)
+  {
+    grabGameInfo();
+  }
+}
+
+function resetVariables()
+{
+  strikes = 0;
+  guessedLetters = [];
+  currentWordList = [];
+  currentWord = null;
 }
