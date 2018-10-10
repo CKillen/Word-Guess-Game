@@ -8,8 +8,8 @@ const domImg = document.getElementById("image");
 const domFails = document.getElementById("fail-count");
 const domFriends = document.getElementById("friend-count");
 
-const imgWon = "/assets/images/pphappy.jpg";
-const imgLose = "/assets/images/ppserious.JPG";
+const imgWon = "assets/images/pphappy.jpg";
+const imgLose = "assets/images/ppserious.JPG";
 
 let currentWord = null;
 let currentImage = null;
