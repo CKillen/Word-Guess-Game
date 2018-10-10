@@ -2,16 +2,20 @@ let imageRequest = new XMLHttpRequest();
 let listRequest = new XMLHttpRequest();
 
 const domCurrentList = document.getElementById("current-list");
-const domDogPic = document.getElementById("dog-pic");
 const domStrikes = document.getElementById("strikes");
 const domGuessedLetters = document.getElementById("guessed-letters");
+const domImg = document.getElementById("image");
+const domFails = document.getElementById("fail-count");
+const domFriends = document.getElementById("friend-count");
 
 let currentWord = null;
 let currentImage = null;
 let strikes = 0;
+let friends = 0;
+let fails = 0;
 
 let currentWordList = [];
-let guessedLetters = [];
+let guessedLetters = [" "];
 
 
 const listAPI = "https://dog.ceo/api/breeds/list/all";
@@ -42,8 +46,14 @@ function roundWon()
   domCurrentList.innerHTML = "Wow she made a new friend! Look how happy she is! Press a button \
       to help her make another friend";
 
+  domImg.src = "assets/images/pphappy.jpg";
+  friends++;
+  domFails.innerHTML = fails.toString();
+  domFriends.innerHTML = friends.toString();
+
     //reset values
-    strikes = 0;
+  strikes = 0;
+  guessedLetters = [" "];
   document.onkeyup = function(event)
   {
     grabGameInfo();
@@ -54,15 +64,18 @@ function roundWon()
 function roundLost()
 {
 
-  console.log(domCurrentList.innerHTML);
-
   domCurrentList.innerHTML = "She's not too happy, you made her look stupid and they didn't want to be \
-    her friend. Press a button to redeem yourself";
-    
-  console.log(domCurrentList.innerHTML);
-    //reset values
-    strikes = 0;
+    her friend. Press any button to try and redeem yourself";
 
+  domImg.src = "assets/images/ppserious.jpg";
+  fails++;
+  domFails.innerHTML = fails.toString();
+  domFriends.innerHTML = friends.toString();
+
+    //reset values
+  strikes = 0;
+  guessedLetters = [" "];
+  console.log("here");
   document.onkeyup = function(event)
   {
     grabGameInfo();
@@ -72,17 +85,22 @@ function roundLost()
 function gamePlay()
 {
   //img var make global with changeable src Maybe add src?
-  var imgHTML = '<img height="auto" width="300px" src="' + JSON.parse(this.response).message + '">';
+
 
   currentWordList= Array(currentWord.length).fill("_");
   //fill in space where needed
+
   currentWordList[currentWord.indexOf(" ")] = "-";
+  currentWord[currentWord.indexOf(" ")] = "-";
   //render word
 
-  //move; for now first renders
-  domDogPic.innerHTML = imgHTML;
+  //move; for now render everything
+  domImg.src = JSON.parse(this.response).message;
   domCurrentList.innerHTML = currentWordList.join(" ");
+  domGuessedLetters.innerHTML = guessedLetters.join(" ");
   domStrikes.innerHTML = strikes.toString();
+  domFails.innerHTML = fails.toString();
+  domFriends.innerHTML = friends.toString();
 
   //get input
 document.onkeyup = function(event)
@@ -106,6 +124,8 @@ document.onkeyup = function(event)
           //render current found list
           currentWordList[i] = event.key;
 
+
+
         }
       }
 
@@ -113,16 +133,7 @@ document.onkeyup = function(event)
     else
     {
       strikes++;
-      if(strikes === 4)
-      {
-        //render lose here
-        //function here
-
-        roundLost();
-
-      }
       //render strikes here; function here
-      domStrikes.innerHTML = strikes.toString();
     }
 
     //should we render whole page or just needed sections?
@@ -130,9 +141,27 @@ document.onkeyup = function(event)
     //all renders in function(s)
     guessedLetters.push(event.key);
 
-    domGuessedLetters.innerHTML = guessedLetters.join(" ");
+    //render everything again besides image
     domCurrentList.innerHTML = currentWordList.join(" ");
+    domGuessedLetters.innerHTML = guessedLetters.join(" ");
+    domStrikes.innerHTML = strikes.toString();
+    //====
 
+
+
+    //win and lose here
+    if(strikes === 4)
+    {
+      //render lose here
+      //function here
+      roundLost();
+    }
+
+
+    if(!currentWordList.includes("_"))
+    {
+        roundWon();
+    }
 
 
   }

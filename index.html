@@ -5,28 +5,44 @@
   <meta name="viewport" content="width=, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
+  <link rel="stylesheet" href="assets/css/style.css">
   <title>Penelope's Hangman</title>
 </head>
 <body>
 
 <div class="container">
   <div class="row text-center mb-5"  >
-    <div class="col-md-12 border border-warning" id="current-list" style="font-size: 50px;">
+    <div class="col-md-12 border border-danger" id="current-list" style="font-size: 50px;">
 
     </div>
 
   </div>
-  <div class="row pic-strikes">
-    <div class="col-md-6 border border-warning" id="dog-pic">
+  <div class="row pic-strikes border">
+    <div class="col-md-6" id="dog-pic">
+      <img src="assets/images/pphug.jpg" width="auto" height="300px" alt="" id="image">
+    </div>
+    <div class="col-md-6 text-center">
+      <div class="row mb-5">
+        <div class="col-md-12">
+          <h1>Strikes</h1>
+          <h1 id="strikes"></h1>
+        </div>
+
+      </div>
+      <div class="row mr-1">
+        <div class="col-md-6 border">
+          <h1>Friends</h1>
+          <h2 id="friend-count"></h2>
+        </div>
+        <div class="col-md-6 border">
+          <h1>Fails</h1>
+          <h2 id="fail-count"></h2>
+        </div>
+      </div>
 
     </div>
-    <div class="col-md-6 border border-warning">
-      <h1>Strikes</h1>
-      <div id="strikes"></div>
-    </div>
   </div>
-    <div class="col-md-12 border border-warning" id="guessed-letters" style="font-size: 50px;">
+    <div class="col-md-12 mt-5 text-center"  id="guessed-letters" style="font-size: 50px;">
 
     </div>
   </div>
@@ -40,6 +56,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script src="game.js"></script>
+<script src="assets/javascript/game.js"></script>
 </body>
 </html>
