@@ -1,6 +1,10 @@
 let imageRequest = new XMLHttpRequest();
 let listRequest = new XMLHttpRequest();
 
+const domCurrentList = document.getElementById("current-list");
+const domDogPic = document.getElementById("dog-pic");
+const domStrikes = document.getElementById("strikes");
+const domGuessedLetters = document.getElementById("guessed-letters");
 
 let currentWord = null;
 let currentImage = null;
@@ -17,106 +21,133 @@ const letterList = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", 
 "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 
-
-
-//After button is pressed play game
-
-
 startGame();
 
 
 
+function startGame()
+{
+  domCurrentList.innerHTML = "Penelope needs some help! She is trying to make new friends and wants to know what \
+      breed they are to look smart. Don't let her down! Press any button to continue"
 
+      //update img to penelope hugging stuffed animal
+      document.onkeyup = function(event)
+      {
+        grabGameInfo();
+      }
+}
+
+function roundWon()
+{
+  domCurrentList.innerHTML = "Wow she made a new friend! Look how happy she is! Press a button \
+      to help her make another friend";
+
+    //reset values
+    strikes = 0;
+  document.onkeyup = function(event)
+  {
+    grabGameInfo();
+  }
+
+}
+
+function roundLost()
+{
+
+  console.log(domCurrentList.innerHTML);
+
+  domCurrentList.innerHTML = "She's not too happy, you made her look stupid and they didn't want to be \
+    her friend. Press a button to redeem yourself";
+    
+  console.log(domCurrentList.innerHTML);
+    //reset values
+    strikes = 0;
+
+  document.onkeyup = function(event)
+  {
+    grabGameInfo();
+  }
+}
 
 function gamePlay()
 {
-  //render image
-  var html = '<img src="' + JSON.parse(this.response).message + '">';
-  currentWordList= Array(currentWord.length).fill("_");
-  //render word
-  console.log(currentWord);
+  //img var make global with changeable src Maybe add src?
+  var imgHTML = '<img height="auto" width="300px" src="' + JSON.parse(this.response).message + '">';
 
+  currentWordList= Array(currentWord.length).fill("_");
+  //fill in space where needed
+  currentWordList[currentWord.indexOf(" ")] = "-";
+  //render word
+
+  //move; for now first renders
+  domDogPic.innerHTML = imgHTML;
+  domCurrentList.innerHTML = currentWordList.join(" ");
+  domStrikes.innerHTML = strikes.toString();
 
   //get input
-  document.onkeyup = function(event) {
+document.onkeyup = function(event)
+{
 
-    //first check if user has already put in input make sound if he has also make sure inputs a letter
-    if(guessedLetters.indexOf(event.key) === -1)
+  //first check if user has already put in input make sound if he has also make sure inputs a letter
+  if(letterList.indexOf(event.key) !== -1 && guessedLetters.indexOf(event.key) === -1)
+  {
+      //if wrong render strikes
+      //if strikes === 4 render lose screen
+      //reset
+    if(currentWord.indexOf(event.key) !== -1)
     {
-        //if wrong render strikes
-        //if strikes === 4 render lose screen
-        //reset
-      if(currentWord.indexOf(event.key) !== -1)
+      //find all occurences in word and fill them in
+      //function here
+      for(var i = 0; i < currentWord.length; i++)
       {
-        //find all occurences in word and fill them in
-        for(var i = 0; i < currentWord.length; i++)
+        if(currentWord[i] === event.key)
         {
-          if(currentWord[i] === event.key)
-          {
-            //this finds index
-            //render current found list
-            currentWordList[i] = event.key;
-            console.log(i);
+          //this finds index
+          //render current found list
+          currentWordList[i] = event.key;
 
-          }
         }
-
-      }
-      else
-      {
-        strikes++;
-        if(strikes === 4)
-        {
-          //render lose here
-          console.log("Lose")
-        }
-        //render strikes here
-        console.log(strikes)
       }
 
-      //if currentWordList === currentWord render win screen
-      guessedLetters.push(event.key);
-      console.log(currentWordList);
-      console.log(guessedLetters);
-
-
     }
-    else {
-      console.log("already guessed that")
+    else
+    {
+      strikes++;
+      if(strikes === 4)
+      {
+        //render lose here
+        //function here
+
+        roundLost();
+
+      }
+      //render strikes here; function here
+      domStrikes.innerHTML = strikes.toString();
     }
-  };
+
+    //should we render whole page or just needed sections?
+    //if currentWordList === currentWord render win screen
+    //all renders in function(s)
+    guessedLetters.push(event.key);
+
+    domGuessedLetters.innerHTML = guessedLetters.join(" ");
+    domCurrentList.innerHTML = currentWordList.join(" ");
+
+
+
+  }
+  else {
+    console.log("invalid or guessed letter")
+  }
+};
 
 }
 
-function userInput()
-{
-  //check if guessed letter is part of current word
-  //if letter isnt part of word playerWrong()
-  //if letter is part of word playerRight
-}
-
-function playerRight()
-{
-  //
-}
-
-function playerIsWrong()
-{
-  //update strikes
-  //if strikes === 0 playerLose
-}
-
-function playerLose()
-{
-  //render game over screen, with play again button
-}
-
-function startGame()
+function grabGameInfo()
 {
   //First we need to get all the game data for said game, the game will be in last callback
   //call list APIs
   //send to imageAPI
-
   listRequest.addEventListener("load", callWordAPI)
   listRequest.open("GET" , listAPI);
   listRequest.send();
@@ -136,7 +167,6 @@ function callWordAPI()
   imageRequest.open("GET" , imgAPICall);
   imageRequest.send();
 
-  return true;
   //now for the image api request that leads into a
 }
 
