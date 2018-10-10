@@ -8,8 +8,8 @@ const domImg = document.getElementById("image");
 const domFails = document.getElementById("fail-count");
 const domFriends = document.getElementById("friend-count");
 
-const imgWon = "assets/images/pphappy.jpg";
-const imgLose = "assets/images/ppserious.jpg";
+const imgWon = "/assets/images/pphappy.jpg";
+const imgLose = "/assets/images/ppserious.jpg";
 
 let currentWord = null;
 let currentImage = null;
@@ -125,6 +125,7 @@ function roundLost()
   //listen to start game on button click
   startGameOnClick();
 }
+
 function checkInput(input)
 {
   if(currentWord.indexOf(input) !== -1)
