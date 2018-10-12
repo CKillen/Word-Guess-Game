@@ -7,9 +7,15 @@ const domGuessedLetters = document.getElementById("guessed-letters");
 const domImg = document.getElementById("image");
 const domFails = document.getElementById("fail-count");
 const domFriends = document.getElementById("friend-count");
+const domInstruction = document.getElementById("instruction-text");
 
+const maxStrikes = 4;
+
+
+const instructionString = "Guess a letter by pressing it - " + maxStrikes.toString() + " strikes and you lose"
 const imgWon = "assets/images/pphappy.jpg";
 const imgLose = "assets/images/ppserious.JPG";
+
 
 let currentWord = null;
 let currentImage = null;
@@ -41,6 +47,7 @@ function startGame()
   domCurrentList.innerHTML = "Penelope needs some help! She is trying to make new friends and wants to know what \
       breed they are to look smart. Don't let her down! Press any button to continue"
 
+  domInstruction.innerHTML = "";
   startGameOnClick();
 }
 
@@ -81,7 +88,7 @@ function formatCurrentWordList()
 
 function checkForGameEnd()
 {
-  if(strikes === 4)
+  if(strikes === maxStrikes)
   {
     roundLost();
   }
@@ -99,8 +106,10 @@ function roundWon()
   renderScreen(imgWon);
 
   //override part of screen render
-  domCurrentList.innerHTML = "Wow she made a new friend! Look how happy she is! Press a button \
-      to help her make another friend";
+  domCurrentList.innerHTML = "Wow she made a new friend with the " + currentWord +"! Look how happy she is! Press a button \
+      to help her make more!";
+
+  domInstruction.innerHTML = "";
 
   //resetVariables();
   resetVariables();
@@ -117,9 +126,10 @@ function roundLost()
   renderScreen(imgLose);
 
   //override screen render
-  domCurrentList.innerHTML = "She's not too happy, you made her look stupid and they didn't want to be \
-    her friend. Press any button to try and redeem yourself";
+  domCurrentList.innerHTML = "She's not too happy, you made her look stupid \
+    in front of the " + currentWord +". Press any button and redeem yourself.";
 
+  domInstruction.innerHTML = "";
   //resetVariables();
   resetVariables();
   //listen to start game on button click
@@ -152,6 +162,7 @@ function findAllLetters(letter)
 
 function renderScreen(imgSrc)
 {
+  domInstruction.innerHTML = instructionString;
   domCurrentList.innerHTML = currentWordList.join(" ");
   domGuessedLetters.innerHTML = guessedLetters.join(" ");
   domStrikes.innerHTML = strikes.toString();
